@@ -2,7 +2,7 @@ from mpi4py import MPI
 
 
 class Machine:
-    def __init__(self,input_machines,target,operation,rank,comm) -> None:
+    def __init__(self,rank,operation = None,comm = None,input_machines = [],target = None) -> None:
         self.inputs = input_machines
         self.type = operation
         self.rank = rank
