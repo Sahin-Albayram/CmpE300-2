@@ -8,14 +8,20 @@ class InputParser:
         self.num_machine = 0
         self.num_cycle = 0
         self.op_wear = {"enhance":0,"reverse":0,"chop":0,"trim":0,"split":0}
-        self.maintenance = 0
+        self.threshold = 0
     
     def create_machine(self):
         self.machines = []
+        self.leafs = []
         for i in range(self.num_machine):
             self.machines.append(Machine(i+1))
+            self.leafs.append(i)
 
+    def leaf_pop(self,num):
+        if num in self.leafs:
+            self.leafs.pop(num)
 
+        
     def create_sim(self):
         pass
 
@@ -29,7 +35,7 @@ class InputParser:
 
         for idx,op_wear in enumerate(op_wears):
             self.op_wear[op_keys[idx]] = op_wear # operation wear factor
-        self.maintenance = int(lines[3]) # Maintenance 
+        self.threshold = int(lines[3]) # Maintenance threshold
         
         self.create_machine()
 
@@ -37,5 +43,10 @@ class InputParser:
 
         for i in range(self.num_machine-1):
             tokens = lines[4+i].split()
-            self.machines[int(tokens[0])-1].target = tokens[1]
-            self.machines[int(tokens[0])-1].operation = tokens[2] 
+            
+            self.machines[int(tokens[0])].target = tokens[1]
+            self.machines[int(tokens[1])].input.append(tokens[0])
+            self.leaf_pop(int(tokens[1]))
+
+            self.machines[int(tokens[0])].operation = tokens[2] 
+        

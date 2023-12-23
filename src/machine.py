@@ -2,10 +2,11 @@ from mpi4py import MPI
 
 
 class Machine:
-    def __init__(self,rank,operation = None,comm = None,input_machines = [],target = None) -> None:
+    def __init__(self,rank,operation = None,comm = None,input_machines = [],target = None):
         self.inputs = input_machines
         self.type = operation
         self.rank = rank
+        self.odd = True if rank%2 == 1 else False
         self.comm = comm
         self.target = target
 
