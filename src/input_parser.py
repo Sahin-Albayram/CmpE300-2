@@ -9,6 +9,7 @@ class InputParser:
         self.num_cycle = 0
         self.op_wear = {"enhance":0,"reverse":0,"chop":0,"trim":0,"split":0}
         self.threshold = 0
+        self.inputs = []
     
     def create_machine(self):
         self.machines = []
@@ -23,7 +24,7 @@ class InputParser:
 
         
     def create_sim(self):
-        pass
+        self.sim = Sim(self.machines,self.inputs,self.leafs)
 
     def parse(self,file):
         f = open(file,'r')
@@ -43,10 +44,15 @@ class InputParser:
 
         for i in range(self.num_machine-1):
             tokens = lines[4+i].split()
-            
+
             self.machines[int(tokens[0])].target = tokens[1]
-            self.machines[int(tokens[1])].input.append(tokens[0])
+            self.machines[int(tokens[1])].input_machines.append(tokens[0])
             self.leaf_pop(int(tokens[1]))
 
             self.machines[int(tokens[0])].operation = tokens[2] 
-        
+        count = 0
+        for i in range(3+self.num_machine,3+self.num_machine+(len(self.leafs))):
+            token = lines[i]
+            self.inputs.append(token)
+        self.create_sim()
+        return self.sim
