@@ -10,7 +10,7 @@ logger = int(sys.argv[3]) + 1 # machine + 1 , 44
 log = [] # list for storing logs for maintenance 
 accumulated = [0 for _ in range(int(sys.argv[3]))] # list for storing accumulation for machines 
 
-requests = []
+results = []
 
 def create_machines(num,threshold,op_wear):
     for i in range(num):
@@ -51,8 +51,8 @@ if rank == 0: # when this is called for control room
 
 
         result = comm.recv(source = parser.root[0],tag=1) # get the output from root 
- 
-        print(result) # print the output
+        results.append(result)
+       # print(result) # print the output
 
 
         for i in range(1,logger):
@@ -79,8 +79,12 @@ if rank == 0: # when this is called for control room
     for i in range(1,parser.num_machine+1): # when cycles over, send -1 to machines to stop processing
         comm.send((machines,-1),dest=i)
     comm.send(-1,dest=logger) # when cycles over, send -1 to logger to stop processing
-    print(log) # print the log
-
+    #print(log) # print the log
+    out_file = open(sys.argv[2],"w")
+    for result in results:
+        out_file.write(result + "\n") # write results to output file
+    for l in log:
+        out_file.write(l + "\n") # write maintenance logs to output file 
 #-----------------------------------------------------
 
 elif rank == logger: # logger 

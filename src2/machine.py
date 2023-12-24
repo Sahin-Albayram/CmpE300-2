@@ -69,14 +69,6 @@ class Machine:
             self.accumulated += int(self.op_wear[self.operation])
             self.acc_check()
             
-        # if self.target == None:
-        #     print(self.rank, " Sending output to mom.")
-        #     #self.comm.send(self.output,dest=0,tag=1)
-        #     MPI.Comm.Get_parent().send(self.output,dest=0,tag=1)
-        # else:
-        #     print(self.rank, " Sending output to my brother : ", self.target)
-        #     # self.commw.send(self.output,dest=self.target)
-        #     MPI.COMM_WORLD.send(self.output,dest=self.target)
 
 
 
