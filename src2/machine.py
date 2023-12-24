@@ -1,3 +1,8 @@
+#Egecan Serbester 2019400231
+#Ömer Şahin Albayram 2021400303
+#group no : 33
+
+
 import copy
 
 # this is a class for machines

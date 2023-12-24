@@ -1,3 +1,8 @@
+#Egecan Serbester 2019400231
+#Ömer Şahin Albayram 2021400303
+#group no : 33
+
+
 from machine import Machine
 
 # this class is for parsing the input from file

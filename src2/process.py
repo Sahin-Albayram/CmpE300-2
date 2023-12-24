@@ -1,3 +1,8 @@
+#Egecan Serbester 2019400231
+#Ömer Şahin Albayram 2021400303
+#group no : 33
+
+
 from mpi4py import MPI
 import sys
 from input_parser import InputParser
