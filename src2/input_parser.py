@@ -1,6 +1,4 @@
 from machine import Machine
-from sim import Sim
-
 
 
 class InputParser:
@@ -28,8 +26,6 @@ class InputParser:
         if num in self.root:
             self.root.remove(num)
     
-    def create_sim(self):
-        self.sim = Sim(self.machines,self.inputs,self.leafs,self.num_cycle,self.root[0])
 
     def parse(self,file):
         f = open(file,'r')
@@ -51,7 +47,7 @@ class InputParser:
             tokens = lines[4+i].split()
 
             self.machines[int(tokens[0])-1].target = int(tokens[1])
-            self.root_pop(int(tokens[0])-1)
+            self.root_pop(int(tokens[0]))
 
 
             self.machines[int(tokens[1])-1].input_machines.append(int(tokens[0]))
@@ -60,7 +56,6 @@ class InputParser:
             self.machines[int(tokens[0])-1].operation = tokens[2] 
         count = 0
         for i in range(3+self.num_machine,3+self.num_machine+(len(self.leafs))):
-            token = lines[i]
+            token = lines[i].rstrip()
             self.inputs.append(token)
-        self.create_sim()
-        return self.sim
+        return self.machines

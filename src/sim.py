@@ -22,7 +22,8 @@ class Sim:
         else:
             for i in range(len(self.leafs)):
                 print("machine : ", self.machines[self.leafs[i]-1].rank, " leaf : ", self.leafs[i], " input : " , self.inputs[i])
-                self.machines[self.leafs[i]-1] = self.inputs[i]
+                self.machines[self.leafs[i]-1].inputs.append(self.inputs[i])
+
     def arrange_operations(self):
         for machine in self.machines:
             if machine.operation == "trim":
@@ -54,9 +55,14 @@ class Sim:
         rank_logger = len(self.machines)+1
         if rank != 0:
             return 0
-        worker_comm = MPI.COMM_SELF.Spawn(sys.executable,args=["child_process.py"],maxprocs=len(self.machines)+1)
+        worker_comm = MPI.COMM_SELF.Spawn(sys.executable,args=["child_process.py"],maxprocs=len(self.machines)+2,root=0)
 
-
+        
+        if worker_comm.Get_remote_size() != len(self.machines)+2:
+            print("creating process step failed ", worker_comm.Get_remote_size(), " " ,len(self.machines)+2)
+            return 0
+        
+        
 
         for i in range(self.num_cycles):
             self.put_inputs()
@@ -70,11 +76,9 @@ class Sim:
             self.results.append(result)
 
 
-            for i in range(1,len(self.machines)+1):
-                self.machines[i-1] = worker_comm.recv(source=i, tag=0)
             maintenance = worker_comm.recv(source = rank_logger)
             self.maintenance.append(maintenance)
 
             self.arrange_operations()
 
-        
+
