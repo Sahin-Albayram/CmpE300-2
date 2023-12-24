@@ -4,7 +4,7 @@ from mpi4py import MPI
 class Machine:
     def __init__(self,rank,threshold,operation = None,comm = None,input_machines = [],target = None):
         self.input_machines = input_machines
-        self.type = operation
+        self.operation = operation
         self.threshold = threshold
         self.rank = rank
         self.odd = True if rank%2 == 1 else False
@@ -22,7 +22,7 @@ class Machine:
     
 
     def output(self):
-        self.comm.send(self.input,dest = self.target,tag = (10*self.rank + self.target.rank))
+        self.comm.send(self.input,dest = self.target)
 
     def process(self):
         if len(self.inputs) == 0:

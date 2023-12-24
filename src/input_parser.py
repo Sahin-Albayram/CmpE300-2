@@ -51,7 +51,6 @@ class InputParser:
             tokens = lines[4+i].split()
 
             self.machines[int(tokens[0])-1].target = tokens[1]
-
             self.root_pop(int(tokens[0])-1)
 
 
