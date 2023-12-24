@@ -2,12 +2,12 @@ from mpi4py import MPI
 
 
 class Machine:
-    def __init__(self,rank,threshold,operation = None,comm = None,input_machines = [],target = None):
+    def __init__(self,rank,threshold,op_wear,operation = None,comm = None,input_machines = [],target = None):
         self.input_machines = input_machines
         self.operation = operation
+        self.op_wear = op_wear
         self.threshold = threshold
         self.rank = rank
-        self.odd = True if rank%2 == 1 else False
         self.comm = comm
         self.target = target
         self.accumulated = 0
@@ -27,28 +27,34 @@ class Machine:
     def process(self):
         if len(self.inputs) == 0:
             self.get_inputs()
-        self.input = ''
+        self.output = ''
         for input in self.inputs:
-            self.input += input
+            self.output += input
 
         if self.operation == "enhance":
-            self.input = self.input[0] + self.input + self.input[-1]
+            self.output = self.output[0] + self.output + self.output[-1]
+            
 
         elif self.operation == "reverse":
-            self.input = self.input[::-1]
+            self.output = self.output[::-1]
 
         elif self.operation == "trim":
-            self.input = self.input[1:-1] if len(self.input) > 2 else self.input
+            self.output = self.output[1:-1] if len(self.output) > 2 else self.output
 
         elif self.operation == "chop":
-            self.input = self.input[:-1] if len(self.input)> 1 else self.input
+            self.output = self.output[:-1] if len(self.output)> 1 else self.output
         
         elif self.operation == "split":
-            self.input = self.input[:len(self.input)//2] if len(self.input)>1  else self.input
+            self.output = self.output[:len(self.output)//2] if len(self.output)>1  else self.output
         
-        self.comm.send(self.input,dest=self.target)
+        self.accumulated += self.op_wear.get(self.operation)
 
-        self.comm.send(self,dest=0)
+        if self.target == None:
+            self.comm.send(self.output,dest=0,tag=1)
+        else:
+            self.comm.send(self.output,dest=self.target)
+
+        self.comm.send(self,dest=0,tag=0)
 
         return 0
         

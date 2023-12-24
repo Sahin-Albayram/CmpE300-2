@@ -16,7 +16,7 @@ class InputParser:
         self.leafs = []
         self.root = []
         for i in range(self.num_machine):
-            self.machines.append(Machine(i+1,self.threshold))
+            self.machines.append(Machine(i+1,self.threshold,self.op_wear))
             self.leafs.append(i+1)
             self.root.append(i+1)
 
@@ -29,7 +29,7 @@ class InputParser:
             self.root.pop(num)
     
     def create_sim(self):
-        self.sim = Sim(self.machines,self.inputs,self.leafs,self.num_cycle)
+        self.sim = Sim(self.machines,self.inputs,self.leafs,self.num_cycle,self.root[0])
 
     def parse(self,file):
         f = open(file,'r')

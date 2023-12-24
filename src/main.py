@@ -8,7 +8,8 @@ def main():
     # rank = comm.Get_rank()
     parser = InputParser()
     sim = parser.parse(sys.argv[1])
-    
+    sim.start_sim()
+    sim.print_results()
 
 
 

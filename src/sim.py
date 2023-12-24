@@ -4,14 +4,16 @@ from machine import Machine
 import sys
 
 class Sim:
-    def __init__(self,machines,inputs,leafs,cycles,root):
+    def __init__(self,machines,inputs,leafs,num_cycles,root):
         self.machines = machines
         inputs.sort()
         leafs.sort()
         self.inputs = inputs
         self.leafs = leafs
-        self.cycles = cycles
+        self.num_cycles = num_cycles
         self.root = root
+        self.results = []
+        self.maintenance = []
 
     def put_inputs(self):
         if len(self.leafs) != len(self.inputs):
@@ -38,9 +40,15 @@ class Sim:
             if machine.operation == "enhance":
                 machine.operation = "split"
 
+    def print_results(self):
+        for result in self.results:
+            print(result)
+        for log in self.maintenance:
+            print(log)
 
-    def create_process(self):
-        self.maintenance = []
+    
+    def start_sim(self):
+        
         comm = MPI.COMM_WORLD
         rank = comm.Get_rank()
         rank_logger = len(self.machines)+1
@@ -50,14 +58,23 @@ class Sim:
 
 
 
-        for i in range(self.cycles):
+        for i in range(self.num_cycles):
             self.put_inputs()
 
             for i in range(1,len(self.machines)+1):
                 worker_comm.send(self.machines[i-1],dest=i)
             worker_comm.send(rank_logger,dest=rank_logger)
+
+
+            result = worker_comm.recv(source=self.root,tag=1)
+            self.results.append(result)
+
+
             for i in range(1,len(self.machines)+1):
-                self.machines[i-1] = worker_comm.recv(source=i)
+                self.machines[i-1] = worker_comm.recv(source=i, tag=0)
             maintenance = worker_comm.recv(source = rank_logger)
             self.maintenance.append(maintenance)
+
             self.arrange_operations()
+
+        
