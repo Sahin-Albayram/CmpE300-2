@@ -14,15 +14,20 @@ class InputParser:
     def create_machine(self):
         self.machines = []
         self.leafs = []
+        self.root = []
         for i in range(self.num_machine):
             self.machines.append(Machine(i+1,self.threshold))
-            self.leafs.append(i)
+            self.leafs.append(i+1)
+            self.root.append(i+1)
 
     def leaf_pop(self,num):
         if num in self.leafs:
             self.leafs.pop(num)
 
-        
+    def root_pop(self,num):
+        if num in self.root:
+            self.root.pop(num)
+    
     def create_sim(self):
         self.sim = Sim(self.machines,self.inputs,self.leafs,self.num_cycle)
 
@@ -46,6 +51,10 @@ class InputParser:
             tokens = lines[4+i].split()
 
             self.machines[int(tokens[0])-1].target = tokens[1]
+
+            self.root_pop(int(tokens[0])-1)
+
+
             self.machines[int(tokens[1])-1].input_machines.append(tokens[0])
             self.leaf_pop(int(tokens[1]))
 
