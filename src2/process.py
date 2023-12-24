@@ -33,7 +33,7 @@ if rank == 0: # when this is called for control room
             machines[parser.leafs[i]-1].inputs = parser.inputs[i] # attach machines inputs as parser inputs (because machines has indices that id+1 we use [i]-1)
 
 
-    for cycle_no in range(1,parser.num_cycle): # loop as cycle number
+    for cycle_no in range(1,parser.num_cycle+1): # loop as cycle number
 
         for rank in range(1,len(accumulated)+1): # storing all machines accumulations
             idx = rank-1
