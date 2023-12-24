@@ -2,13 +2,15 @@ from mpi4py import MPI
 
 
 class Machine:
-    def __init__(self,rank,operation = None,comm = None,input_machines = [],target = None):
+    def __init__(self,rank,threshold,operation = None,comm = None,input_machines = [],target = None):
         self.input_machines = input_machines
         self.type = operation
+        self.threshold = threshold
         self.rank = rank
         self.odd = True if rank%2 == 1 else False
         self.comm = comm
         self.target = target
+        self.accumulated = 0
 
     def get_inputs(self,input=None):
         if input == None:
@@ -23,6 +25,8 @@ class Machine:
         self.comm.send(self.input,dest = self.target,tag = (10*self.rank + self.target.rank))
 
     def process(self):
+        if len(self.inputs) == 0:
+            self.get_inputs()
         self.input = ''
         for input in self.inputs:
             self.input += input
@@ -42,4 +46,9 @@ class Machine:
         elif self.operation == "split":
             self.input = self.input[:len(self.input)//2] if len(self.input)>1  else self.input
         
+        self.comm.send(self.input,dest=self.target)
+
+        self.comm.send(self,dest=0)
+
+        return 0
         

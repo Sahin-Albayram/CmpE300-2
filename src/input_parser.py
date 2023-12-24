@@ -15,7 +15,7 @@ class InputParser:
         self.machines = []
         self.leafs = []
         for i in range(self.num_machine):
-            self.machines.append(Machine(i+1))
+            self.machines.append(Machine(i+1,self.threshold))
             self.leafs.append(i)
 
     def leaf_pop(self,num):
@@ -24,7 +24,7 @@ class InputParser:
 
         
     def create_sim(self):
-        self.sim = Sim(self.machines,self.inputs,self.leafs)
+        self.sim = Sim(self.machines,self.inputs,self.leafs,self.num_cycle)
 
     def parse(self,file):
         f = open(file,'r')
@@ -45,11 +45,11 @@ class InputParser:
         for i in range(self.num_machine-1):
             tokens = lines[4+i].split()
 
-            self.machines[int(tokens[0])].target = tokens[1]
-            self.machines[int(tokens[1])].input_machines.append(tokens[0])
+            self.machines[int(tokens[0])-1].target = tokens[1]
+            self.machines[int(tokens[1])-1].input_machines.append(tokens[0])
             self.leaf_pop(int(tokens[1]))
 
-            self.machines[int(tokens[0])].operation = tokens[2] 
+            self.machines[int(tokens[0])-1].operation = tokens[2] 
         count = 0
         for i in range(3+self.num_machine,3+self.num_machine+(len(self.leafs))):
             token = lines[i]
